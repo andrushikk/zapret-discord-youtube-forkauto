@@ -35,11 +35,11 @@ Write-Host ("[*] Found {0}: {1}" -f $assetName, $downloadUrl)
 # Target directory
 $targetRoot = "D:\forkzap"
 
-if (-not (Test-Path "D:\")) {
-    Write-Error "[!] Drive D: not found. Change targetRoot in script or create drive D."
-    Read-Host "Press Enter to exit"
-    exit 1
-}
+# if (-not (Test-Path "D:\")) {
+#     Write-Error "[!] Drive D: not found. Change targetRoot in script or create drive D."
+#     Read-Host "Press Enter to exit"
+#     exit 1
+# }
 
 if (-not (Test-Path $targetRoot)) {
     New-Item -ItemType Directory -Path $targetRoot | Out-Null
