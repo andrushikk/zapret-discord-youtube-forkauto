@@ -1,7 +1,7 @@
 [CmdletBinding()]
 param(
     [string]$Profile = "general",
-    [string]$InstallPath = "D:\forkzap"
+    [string]$InstallPath = "G:\forkzap"
 )
 
 $ErrorActionPreference = "Stop"
