@@ -1,5 +1,5 @@
 param(
-    [string]$Profile = "general"   # Например: ALT2, ALT3 и т.п.
+    [string]$Profile = "general" 
 )
 
 $ErrorActionPreference = "Stop"
@@ -30,7 +30,6 @@ if (-not $asset) {
 $downloadUrl = $asset.browser_download_url
 Write-Host "[*] Найден $assetName: $downloadUrl"
 
-# Куда ставим
 $targetRoot = "D:\forkzap"
 if (-not (Test-Path "D:\")) {
     Write-Error "[!] Диск D: не найден."
@@ -53,9 +52,6 @@ Remove-Item $tmpZip -Force
 
 Write-Host "[✔] Готово. Файлы распакованы в: $targetRoot"
 
-# Ищем батник по профилю.
-# Например, Profile = ALT2 найдёт файл, содержащий "ALT2" в имени:
-# "general (ALT2).bat" → матчится.
 $runBat = Get-ChildItem -Path $targetRoot -Recurse -Filter "*$Profile*.bat" -ErrorAction SilentlyContinue |
           Select-Object -First 1
 
