@@ -65,3 +65,10 @@ if ($runBat) {
         Write-Host " - $($_.FullName)"
     }
 }
+
+Read-Host "Нажмите Enter, чтобы продолжить..."
+
+
+
+
+# powershell -NoP -ExecutionPolicy Bypass -Command "Invoke-WebRequest 'https://raw.githubusercontent.com/andrushikk/zapret-discord-youtube-forkauto/refs/heads/main/install_forkzap.ps1' -OutFile $env:TEMP\install_forkzap.ps1; & $env:TEMP\install_forkzap.ps1 -Profile 'ALT2'"
