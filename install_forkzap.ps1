@@ -1,5 +1,5 @@
 param(
-    [string]$Profile = "general"   
+    [string]$Profile = "general"   # Например: ALT2, ALT6 и т.д.
 )
 
 $ErrorActionPreference = "Stop"
@@ -34,6 +34,7 @@ Write-Host ("[*] Найден {0}: {1}" -f $assetName, $downloadUrl)
 
 
 $targetRoot = "D:\forkzap"
+
 if (-not (Test-Path "D:\")) {
     Write-Error "[!] Диск D: не найден. Измени путь в скрипте или создай диск D."
     Read-Host "`n[⏸] Нажмите Enter чтобы закрыть окно."
@@ -72,7 +73,6 @@ if ($runBat) {
     }
     Read-Host "`n[⏸] Нажмите Enter чтобы закрыть окно."
 }
-
 
 
 # powershell -NoP -ExecutionPolicy Bypass -Command "Invoke-WebRequest 'https://raw.githubusercontent.com/andrushikk/zapret-discord-youtube-forkauto/main/install_forkzap.ps1' -OutFile $env:TEMP\install_forkzap.ps1; & $env:TEMP\install_forkzap.ps1 -Profile 'ALT2'"
