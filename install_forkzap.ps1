@@ -74,6 +74,3 @@ else {
     }
     Read-Host "Press Enter to exit"
 }
-
-# Example:
-# powershell -NoP -ExecutionPolicy Bypass -Command "Invoke-WebRequest 'https://raw.githubusercontent.com/andrushikk/zapret-discord-youtube-forkauto/main/install_forkzap.ps1' -OutFile $env:TEMP\install_forkzap.ps1; & $env:TEMP\install_forkzap.ps1 -Profile 'ALT6'"
