@@ -1,5 +1,5 @@
 param(
-    [string]$Profile = "general"   # Например: ALT2, ALT6 и т.д.
+    [string]$Profile = "general"   # e.g. ALT2, ALT6, etc.
 )
 
 $ErrorActionPreference = "Stop"
@@ -8,36 +8,36 @@ $owner     = "andrushikk"
 $repo      = "zapret-discord-youtube-forkauto"
 $assetName = "forkzap.zip"
 
-Write-Host "[*] Получаю информацию о последнем релизе..."
+Write-Host "[*] Getting latest release info..."
 
 try {
-    $release = Invoke-RestMethod `
-        -Uri "https://api.github.com/repos/$owner/$repo/releases/latest" `
-        -Headers @{ "User-Agent" = "forkzap-installer" }
+    $release = Invoke-RestMethod -Uri "https://api.github.com/repos/$owner/$repo/releases/latest" -Headers @{
+        "User-Agent" = "forkzap-installer"
+    }
 }
 catch {
-    Write-Error "[X] Не удалось получить данные о релизе с GitHub: $($_.Exception.Message)"
-    Read-Host "`n[⏸] Нажмите Enter чтобы закрыть окно."
+    Write-Error "[X] Failed to get release info: $($_.Exception.Message)"
+    Read-Host "Press Enter to exit"
     exit 1
 }
 
 $asset = $release.assets | Where-Object { $_.name -eq $assetName } | Select-Object -First 1
 
 if (-not $asset) {
-    Write-Error "[X] В последнем релизе не найден файл $assetName."
-    Read-Host "`n[⏸] Нажмите Enter чтобы закрыть окно."
+    Write-Error "[X] Asset $assetName not found in latest release."
+    Read-Host "Press Enter to exit"
     exit 1
 }
 
 $downloadUrl = $asset.browser_download_url
-Write-Host ("[*] Найден {0}: {1}" -f $assetName, $downloadUrl)
+Write-Host ("[*] Found {0}: {1}" -f $assetName, $downloadUrl)
 
-
+# Target directory
 $targetRoot = "D:\forkzap"
 
 if (-not (Test-Path "D:\")) {
-    Write-Error "[!] Диск D: не найден. Измени путь в скрипте или создай диск D."
-    Read-Host "`n[⏸] Нажмите Enter чтобы закрыть окно."
+    Write-Error "[!] Drive D: not found. Change targetRoot in script or create drive D."
+    Read-Host "Press Enter to exit"
     exit 1
 }
 
@@ -47,32 +47,33 @@ if (-not (Test-Path $targetRoot)) {
 
 $tmpZip = Join-Path $env:TEMP $assetName
 
-Write-Host "[*] Скачиваю архив..."
+Write-Host "[*] Downloading zip..."
 Invoke-WebRequest -Uri $downloadUrl -OutFile $tmpZip
 
-Write-Host "[*] Распаковываю в $targetRoot ..."
+Write-Host "[*] Extracting to $targetRoot ..."
 Expand-Archive -LiteralPath $tmpZip -DestinationPath $targetRoot -Force
 
 Remove-Item $tmpZip -Force
 
-Write-Host "[✔] Готово. Файлы распакованы в: $targetRoot"
+Write-Host "[✔] Done. Files extracted to: $targetRoot"
 
-
+# Find bat by profile: ALT6 -> matches "general (ALT6).bat"
 $runBat = Get-ChildItem -Path $targetRoot -Recurse -Filter "*$Profile*.bat" -ErrorAction SilentlyContinue |
           Select-Object -First 1
 
 if ($runBat) {
-    Write-Host "[*] Нашёл батник: $($runBat.FullName)"
-    Read-Host "[⏸] Нажмите Enter для запуска с правами администратора..."
+    Write-Host "[*] Found bat: $($runBat.FullName)"
+    Read-Host "Press Enter to run it as admin..."
     Start-Process -FilePath $runBat.FullName -Verb RunAs
-} else {
-    Write-Host "[i] Не найден .bat для профиля '$Profile'."
-    Write-Host "Доступные батники:"
+}
+else {
+    Write-Host "[i] No .bat found for profile '$Profile'."
+    Write-Host "Available bat files:"
     Get-ChildItem -Path $targetRoot -Recurse -Filter "*.bat" | ForEach-Object {
         Write-Host " - $($_.FullName)"
     }
-    Read-Host "`n[⏸] Нажмите Enter чтобы закрыть окно."
+    Read-Host "Press Enter to exit"
 }
 
-
-# powershell -NoP -ExecutionPolicy Bypass -Command "Invoke-WebRequest 'https://raw.githubusercontent.com/andrushikk/zapret-discord-youtube-forkauto/main/install_forkzap.ps1' -OutFile $env:TEMP\install_forkzap.ps1; & $env:TEMP\install_forkzap.ps1 -Profile 'ALT2'"
+# Example:
+# powershell -NoP -ExecutionPolicy Bypass -Command "Invoke-WebRequest 'https://raw.githubusercontent.com/andrushikk/zapret-discord-youtube-forkauto/main/install_forkzap.ps1' -OutFile $env:TEMP\install_forkzap.ps1; & $env:TEMP\install_forkzap.ps1 -Profile 'ALT6'"
