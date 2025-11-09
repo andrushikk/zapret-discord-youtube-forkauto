@@ -32,7 +32,7 @@ if (-not $asset) {
 $downloadUrl = $asset.browser_download_url
 Write-Host ("[*] Найден {0}: {1}" -f $assetName, $downloadUrl)
 
-
+# Куда ставим
 $targetRoot = "D:\forkzap"
 
 if (-not (Test-Path "D:\")) {
@@ -57,7 +57,7 @@ Remove-Item $tmpZip -Force
 
 Write-Host "[✔] Готово. Файлы распакованы в: $targetRoot"
 
-
+# Ищем батник по профилю: ALT6 -> найдёт "general (ALT6).bat"
 $runBat = Get-ChildItem -Path $targetRoot -Recurse -Filter "*$Profile*.bat" -ErrorAction SilentlyContinue |
           Select-Object -First 1
 
@@ -74,5 +74,5 @@ if ($runBat) {
     Read-Host "`n[⏸] Нажмите Enter чтобы закрыть окно."
 }
 
-
-# powershell -NoP -ExecutionPolicy Bypass -Command "Invoke-WebRequest 'https://raw.githubusercontent.com/andrushikk/zapret-discord-youtube-forkauto/main/install_forkzap.ps1' -OutFile $env:TEMP\install_forkzap.ps1; & $env:TEMP\install_forkzap.ps1 -Profile 'ALT2'"
+# Пример запуска:
+# powershell -NoP -ExecutionPolicy Bypass -Command "Invoke-WebRequest 'https://raw.githubusercontent.com/andrushikk/zapret-discord-youtube-forkauto/main/install_forkzap.ps1' -OutFile $env:TEMP\install_forkzap.ps1; & $env:TEMP\install_forkzap.ps1 -Profile 'ALT6'"
