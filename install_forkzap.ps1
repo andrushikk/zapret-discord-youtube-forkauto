@@ -1,5 +1,5 @@
 param(
-    [string]$Profile = "general" 
+    [string]$Profile = "general"   
 )
 
 $ErrorActionPreference = "Stop"
@@ -17,6 +17,7 @@ try {
 }
 catch {
     Write-Error "[X] Не удалось получить данные о релизе с GitHub: $($_.Exception.Message)"
+    Read-Host "`n[⏸] Нажмите Enter чтобы закрыть окно."
     exit 1
 }
 
@@ -24,15 +25,18 @@ $asset = $release.assets | Where-Object { $_.name -eq $assetName } | Select-Obje
 
 if (-not $asset) {
     Write-Error "[X] В последнем релизе не найден файл $assetName."
+    Read-Host "`n[⏸] Нажмите Enter чтобы закрыть окно."
     exit 1
 }
 
 $downloadUrl = $asset.browser_download_url
-Write-Host "[*] Найден $assetName: $downloadUrl"
+Write-Host ("[*] Найден {0}: {1}" -f $assetName, $downloadUrl)
+
 
 $targetRoot = "D:\forkzap"
 if (-not (Test-Path "D:\")) {
-    Write-Error "[!] Диск D: не найден."
+    Write-Error "[!] Диск D: не найден. Измени путь в скрипте или создай диск D."
+    Read-Host "`n[⏸] Нажмите Enter чтобы закрыть окно."
     exit 1
 }
 
@@ -52,11 +56,13 @@ Remove-Item $tmpZip -Force
 
 Write-Host "[✔] Готово. Файлы распакованы в: $targetRoot"
 
+
 $runBat = Get-ChildItem -Path $targetRoot -Recurse -Filter "*$Profile*.bat" -ErrorAction SilentlyContinue |
           Select-Object -First 1
 
 if ($runBat) {
-    Write-Host "[*] Запускаю $($runBat.FullName) c правами администратора..."
+    Write-Host "[*] Нашёл батник: $($runBat.FullName)"
+    Read-Host "[⏸] Нажмите Enter для запуска с правами администратора..."
     Start-Process -FilePath $runBat.FullName -Verb RunAs
 } else {
     Write-Host "[i] Не найден .bat для профиля '$Profile'."
@@ -64,11 +70,9 @@ if ($runBat) {
     Get-ChildItem -Path $targetRoot -Recurse -Filter "*.bat" | ForEach-Object {
         Write-Host " - $($_.FullName)"
     }
+    Read-Host "`n[⏸] Нажмите Enter чтобы закрыть окно."
 }
 
-Read-Host "Нажмите Enter, чтобы продолжить..."
 
 
-
-
-# powershell -NoP -ExecutionPolicy Bypass -Command "Invoke-WebRequest 'https://raw.githubusercontent.com/andrushikk/zapret-discord-youtube-forkauto/refs/heads/main/install_forkzap.ps1' -OutFile $env:TEMP\install_forkzap.ps1; & $env:TEMP\install_forkzap.ps1 -Profile 'ALT2'"
+# powershell -NoP -ExecutionPolicy Bypass -Command "Invoke-WebRequest 'https://raw.githubusercontent.com/andrushikk/zapret-discord-youtube-forkauto/main/install_forkzap.ps1' -OutFile $env:TEMP\install_forkzap.ps1; & $env:TEMP\install_forkzap.ps1 -Profile 'ALT2'"
